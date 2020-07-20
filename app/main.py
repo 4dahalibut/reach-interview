@@ -1,4 +1,6 @@
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
@@ -7,12 +9,20 @@ from .mailer import send_email
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
-
 
 class OurNotFoundException(HTTPException):
     def __init__(self, message):
         super().__init__(status_code=404, detail=message)
+
+
+async def not_found(request, exc):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content=jsonable_encoder({"message": "nope"}),
+    )
+
+
+app = FastAPI(exception_handlers={404: not_found})
 
 
 def get_db():
