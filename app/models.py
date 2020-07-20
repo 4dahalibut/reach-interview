@@ -9,5 +9,7 @@ class Person(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
-    description = Column(String, default="This user prefers to keep an air of mystery")
+    description = Column(
+        String, default="This person prefers to keep an air of mystery"
+    )
     signup_email_success = Column(Boolean, default=False)
