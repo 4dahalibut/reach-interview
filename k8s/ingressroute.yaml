@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: myingressroute
+
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`reach.interview.localhost`)
+      kind: Rule
+      services:
+        - name: reach
+          port: 8080
+      middlewares:
+        - name: test-ratelimit

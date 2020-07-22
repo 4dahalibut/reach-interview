@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reach
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reach
+  template:
+    metadata:
+      labels:
+        app: reach
+    spec:
+      containers:
+      - name: reach
+        image: 4dahalibut/reach-interview:reach
+        ports:
+        - containerPort: 8080
