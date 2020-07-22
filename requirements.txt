@@ -5,3 +5,5 @@ fastapi==0.59.0
 pytest==5.4.3
 SQLAlchemy==1.3.18
 uvicorn==0.11.6
+asgi-ratelimit==0.2.0
+

@@ -1,11 +1,16 @@
+from typing import Tuple
+
+import uvicorn
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from ratelimit import RateLimitMiddleware, Rule
+from ratelimit.backends.redis import RedisBackend
 from sqlalchemy.orm import Session
 
-from . import crud, models, schemas
-from .database import engine, SessionLocal
-from .mailer import send_email
+from app import crud, models, schemas
+from app.database import engine, SessionLocal
+from app.mailer import send_email
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -22,7 +27,27 @@ async def not_found(request, exc):
     )
 
 
+async def AUTH_FUNCTION(scope) -> Tuple[str, str]:
+    """
+    Resolve the user's unique identifier and the user's group from ASGI SCOPE.
+
+    If there is no user information, it should raise `EmptyInformation`.
+    If there is no group information, it should return "default".
+    """
+    return "1", "default"
+
+
 app = FastAPI(exception_handlers={404: not_found})
+
+app.add_middleware(
+    RateLimitMiddleware,
+    authenticate=AUTH_FUNCTION,
+    backend=RedisBackend(),
+    config={
+        r"^/person": [Rule(second=1), Rule(group="default")],
+        r"^/": [Rule(minute=5), Rule(group="default")],
+    },
+)
 
 
 def get_db():
@@ -74,3 +99,7 @@ def fetch_person(person_id: int, db: Session = Depends(get_db)):
     if person is None:
         raise OurNotFoundException("That person isn't in our database!")
     return person
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
