@@ -10,6 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 def send_email(email: str, name: str, message, db: Session):
+    """
+    This code will send an email using some SMTP server deployed at the same time as the app.
+    For production, this code should be changed to use Yagmail or MailGun, which are more
+    enterprise grade mail solutions.
+    """
     msg = MIMEText(message)
     msg["Subject"] = name
     msg["From"] = "info@reach.com"

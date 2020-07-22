@@ -15,3 +15,16 @@ For this app to be deployed to a real cluster such as through GKE, many pieces o
 * Setting up Traefik is best done through Helm for some sane defaults, but the rate limiting middleware and the ingress route would need to be added to the set of yamlfiles applied to the cluster. 
 * Kibana and Grafana should be deployed to the cluster, to read the logs from this service. 
 * Enough compute should be configured to run the app and the associated amenities. I don't think there are any requirements for the compute, because this app should be easily scalable horizontally through reconfiguring the deployment, or through using the Horizontal Pod Autoscaler
+
+## Running the app locally
+The app works best in its own Python 3.8.1 virtualenv, with all requirements installed from the 
+requirements.txt file. 
+
+You can start the app locally by running "PYTHONPATH . python app/main.py"
+However, note that you will have to run some SMTP server for the email functionality to 
+work correctly. This can be done for example with this command
+```sudo python -m smtpd -n localhost:8025```
+
+You can also start the app by running the docker image locally, or through deploying the 
+applying service.yaml and deployment.yaml in the k8s directory. 
+
