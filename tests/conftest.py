@@ -1,15 +1,19 @@
+import os
+
 import pytest
 from aiosmtpd.controller import Controller
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+os.environ["ENVIRONMENT"] = "testing"
 from app.main import app, get_db
 from app.database import Base
 
 
 @pytest.fixture()
 def client():
+    app.user_middleware = []
     database_url = "sqlite:///./test.db"
 
     engine = create_engine(database_url, connect_args={"check_same_thread": False})

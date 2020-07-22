@@ -1,4 +1,5 @@
 from typing import Tuple
+import os
 
 import uvicorn
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, status
@@ -39,15 +40,16 @@ async def AUTH_FUNCTION(scope) -> Tuple[str, str]:
 
 app = FastAPI(exception_handlers={404: not_found})
 
-app.add_middleware(
-    RateLimitMiddleware,
-    authenticate=AUTH_FUNCTION,
-    backend=RedisBackend(),
-    config={
-        r"^/person": [Rule(second=1), Rule(group="default")],
-        r"^/": [Rule(minute=5), Rule(group="default")],
-    },
-)
+if os.getenv('ENVIRONMENT') != "testing":
+    app.add_middleware(
+        RateLimitMiddleware,
+        authenticate=AUTH_FUNCTION,
+        backend=RedisBackend(),
+        config={
+            r"^/person": [Rule(second=1), Rule(group="default")],
+            r"^/": [Rule(minute=5), Rule(group="default")],
+        },
+    )
 
 
 def get_db():
