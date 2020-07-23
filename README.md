@@ -29,6 +29,7 @@ You can also start the app by running the docker image locally, or through deplo
 applying service.yaml and deployment.yaml in the k8s directory. 
 
 I also had to edit the asgi-ratelimit library for some reason, manually applying this bugfix - https://github.com/abersheeran/asgi-ratelimit/commit/779644218d685256dc02d78a1091ffacd63986a1
+
 Redis should also be started up locally using default parameters. 
 
 ## If I had more time
