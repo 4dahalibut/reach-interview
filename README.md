@@ -37,4 +37,4 @@ Redis should also be started up locally using default parameters.
 * The SMTP service being spun up on its own is strange
 * Traefik
 * Honing the put endpoint a little more closely
-* The rate limiting wasn't added into the docker image, and likely won't work in docker because there is no redis access. 
+* I didn't test the rate limiting with docker, because I didn't want to set up the redis linked container
