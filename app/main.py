@@ -40,7 +40,7 @@ async def AUTH_FUNCTION(scope) -> Tuple[str, str]:
 
 app = FastAPI(exception_handlers={404: not_found})
 
-if os.getenv('ENVIRONMENT') != "testing":
+if os.getenv("ENVIRONMENT") != "testing":
     app.add_middleware(
         RateLimitMiddleware,
         authenticate=AUTH_FUNCTION,
@@ -96,7 +96,7 @@ async def edit_person(
 
 
 @app.get("/person/{person_id}", response_model=schemas.Person)
-def fetch_person(person_id: int, db: Session = Depends(get_db)):
+async def fetch_person(person_id: int, db: Session = Depends(get_db)):
     person = crud.get_person_by_id(db, person_id=person_id)
     if person is None:
         raise OurNotFoundException("That person isn't in our database!")

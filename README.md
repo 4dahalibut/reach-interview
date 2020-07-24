@@ -20,7 +20,7 @@ For this app to be deployed to a real kubernetes cluster such as through GKE, ma
 The app works best in its own Python 3.8.1 virtualenv, with all requirements installed from the 
 requirements.txt file. 
 
-You can start the app locally by running "PYTHONPATH . python app/main.py"
+You can start the app locally by running "uvicorn app.main:app --reload"
 However, note that you will have to run some SMTP server for the email functionality to 
 work correctly. This can be done for example with this command
 ```sudo python -m smtpd -n localhost:8025```
@@ -35,7 +35,6 @@ Redis should also be started up locally using default parameters.
 ## If I had more time
 * There should be a test for the rate limiting and end-to-end functionality using docker and k8s. 
 * The SMTP service being spun up on its own is strange
-* Running the app through uvicorn directly doesn't work because of path issues. 
 * Traefik
 * Honing the put endpoint a little more closely
 * The rate limiting wasn't added into the docker image, and likely won't work in docker because there is no redis access. 
