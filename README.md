@@ -17,24 +17,24 @@ For this app to be deployed to a real kubernetes cluster such as through GKE, ma
 * Enough compute should be configured to run the app and the associated amenities. I don't think there are any specific requirements for the compute, because this app should be easily scalable horizontally through reconfiguring the deployment, or through using the Horizontal Pod Autoscaler
 
 ## Running the app locally
-The app works best in its own Python 3.8.1 virtualenv, with all requirements installed from the 
-requirements.txt file. 
+1. Create a new pyenv virtualenv using Python 3.8
+2. Install requirements.txt files
+3. Apply this change to the asgi-ratelimit package
+ https://github.com/abersheeran/asgi-ratelimit/commit/779644218d685256dc02d78a1091ffacd63986a1
+ The change hasn't made it into the latest pip package yet. 
+4. Start up redis locally using default parameters
+4. Run `sudo python -m smtpd -n localhost:8025`
+5. Run `uvicorn app.main:app --reload`
 
-You can start the app locally by running "uvicorn app.main:app --reload"
-However, note that you will have to run some SMTP server for the email functionality to 
-work correctly. This can be done for example with this command
-```sudo python -m smtpd -n localhost:8025```
+You can also try running the app without rate limiting using a docker image. Rate limiting requires Redis, 
+and Redis is tricky to deploy into the docker container. To navigate around the rate limiting, 
+add the `ENVIRONMENT=testing` environment variable to your container. 
 
-You can also start the app by running the docker image locally, or through deploying the 
-applying service.yaml and deployment.yaml in the k8s directory. 
-
-I also had to edit the asgi-ratelimit library for some reason, manually applying this bugfix - https://github.com/abersheeran/asgi-ratelimit/commit/779644218d685256dc02d78a1091ffacd63986a1
-
-Redis should also be started up locally using default parameters. 
+You can also try running the app using minikube and applying just the service.yaml and deployment.yaml files.
 
 ## If I had more time
 * There should be a test for the rate limiting and end-to-end functionality using docker and k8s. 
-* The SMTP service being spun up on its own is strange
-* Traefik
-* Honing the put endpoint a little more closely
+* Using yagmail or mailgun for emails. 
+* Traefik for rate limiting. 
+* Honing the put endpoint a little more closely so as more fields could be edited. 
 * I didn't test the rate limiting with docker, because I didn't want to set up the redis linked container
